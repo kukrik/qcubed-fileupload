@@ -336,16 +336,6 @@ class ExamplesForm extends Form
         $this->intEditFilesId = null;
     }
 
-    protected function delete($path)
-    {
-        
-
-        if (is_file($path)) {
-
-
-        }
-    }
-
     protected function rename($old, $new)
     {
         return (!file_exists($new) && file_exists($old)) ? rename($old, $new) : null;
@@ -412,7 +402,7 @@ class ExamplesForm extends Form
         return $icon;
     }
 
-    protected function readableBytes($bytes)
+    protected static function readableBytes($bytes)
     {
         $i = floor(log($bytes) / log(1024));
         $sizes = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
