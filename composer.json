@@ -1,0 +1,17 @@
+{
+    "name": "kukrik/qcubed-fileupload",
+    "description": "QCubed v4 plugin for created FileUpload",
+    "type": "qcubed-library",
+    "keywords": ["qcubed", "qcubed-fileupload"],
+    "license": "MIT",
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+      "psr-4": {"QCubed\\Plugin\\": "src/"}
+    },
+    "extra": {
+        "examples": ["fileupload.php", "filemanager.php"]
+    },
+    "minimum-stability": "dev"
+}

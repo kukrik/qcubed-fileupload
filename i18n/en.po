@@ -1,0 +1,94 @@
+# QCubed Distributed Language File for English (default)
+msgid ""
+msgstr ""
+
+msgid "%s is required"
+msgstr "%s is required"
+
+msgid "Required"
+msgstr "Required"
+
+msgid "%s must have at least %s characters"
+msgstr "%s must have at least %s characters"
+
+msgid "Must have at least %s characters"
+msgstr "Must have at least %s characters"
+
+msgid "Create the destination path of the folder name"
+msgstr "Create the destination path of the folder name"
+
+msgid "Add files"
+msgstr "Add files"
+
+msgid "Start upload"
+msgstr "Start upload"
+
+msgid "Cancel all upload"
+msgstr "Cancel all upload"
+
+msgid "en"
+msgstr "en"
+
+msgid "et"
+msgstr "et"
+
+msgid "ru"
+msgstr "ru"
+
+msgid "Uploaded file exceeds upload_max_filesize directive in php.ini"
+msgstr "Uploaded file exceeds upload_max_filesize directive in php.ini"
+
+msgid "Uploaded file exceeds MAX_FILE_SIZE directive specified in the HTML form"
+msgstr "Uploaded file exceeds MAX_FILE_SIZE directive specified in the HTML form"
+
+msgid "The uploaded file was only partially uploaded"
+msgstr "The uploaded file was only partially uploaded"
+
+msgid "Failed to move uploaded file"
+msgstr "Failed to move uploaded file"
+
+msgid "Missing a temporary folder"
+msgstr "Missing a temporary folder"
+
+msgid "Failed to write file to disk"
+msgstr "Failed to write file to disk"
+
+msgid "A PHP extension stopped the file upload"
+msgstr "A PHP extension stopped the file upload"
+
+msgid "Filetype not allowed"
+msgstr "Filetype not allowed"
+
+msgid "Invalid image type"
+msgstr "Invalid image type"
+
+msgid "Invalid file size"
+msgstr "Invalid file size"
+
+msgid "File size exceeds max_filesize %s"
+msgstr "File size exceeds max_filesize %s"
+
+msgid "%s already exists"
+msgstr "%s already exists"
+
+msgid "Invalid image / failed getimagesize()"
+msgstr "Invalid image / failed getimagesize()"
+
+msgid "Failed to resize image"
+msgstr "Failed to resize image"
+
+msgid "imagejpeg() failed to create and resize the image"
+msgstr "imagejpeg() failed to create and resize the image"
+
+msgid "Failed to open stream: No such directory to put into"
+msgstr "Failed to open stream: No such directory to put into"
+
+msgid "Failed to open output stream"
+msgstr "Failed to open output stream"
+
+msgid "Failed to open input stream"
+msgstr "Failed to open input stream"
+
+
+
+

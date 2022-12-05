@@ -1,0 +1,95 @@
+msgid ""
+msgstr ""
+
+msgid "%s is required"
+msgstr "%s on nõutav"
+
+msgid "Required"
+msgstr "Nõutav"
+
+msgid "%s must have at least %s characters"
+msgstr "%s peab olema vähemalt %s tähemärki"
+
+msgid "%s must have at most %s characters"
+msgstr "%s peab koosnema maksimaalselt %s tähemärki"
+
+msgid "Must have at least %s characters"
+msgstr "Peab olema vähemalt %s tähemärki"
+
+msgid "Must have at most %s characters"
+msgstr "Peab olema maksimaalselt %s tähemärki"
+
+msgid "Create the destination path of the folder name"
+msgstr "Looge kausta nimele sihttee"
+
+msgid "Add files"
+msgstr "Lisa failid"
+
+msgid "Start upload"
+msgstr "Alusta üleslaadimist"
+
+msgid "Cancel all uploads"
+msgstr "Tühista kõik üleslaadimised"
+
+msgid "en"
+msgstr "en"
+
+msgid "et"
+msgstr "et"
+
+msgid "ru"
+msgstr "ru"
+
+msgid "Uploaded file exceeds upload_max_filesize directive in php.ini"
+msgstr "Üleslaaditud fail ületab faili php.ini direktiivi upload_max_filesize"
+
+msgid "Uploaded file exceeds MAX_FILE_SIZE directive specified in the HTML form"
+msgstr "Üleslaaditud fail ületab HTML-vormis määratud MAX_FILE_SIZE direktiivi"
+
+msgid "The uploaded file was only partially uploaded"
+msgstr "Üleslaaditud fail laaditi üles ainult osaliselt"
+
+msgid "Failed to move uploaded file"
+msgstr "Üleslaaditud faili teisaldamine ebaõnnestus"
+
+msgid "Missing a temporary folder"
+msgstr "Puudub ajutine kaust"
+
+msgid "Failed to write file to disk"
+msgstr "Faili kettale kirjutamine ebaõnnestus"
+
+msgid "A PHP extension stopped the file upload"
+msgstr "PHP laiendus peatas faili üleslaadimise"
+
+msgid "Filetype not allowed"
+msgstr "Failitüüp pole lubatud"
+
+msgid "Invalid image type"
+msgstr "Kehtetu pilditüüp"
+
+msgid "Invalid file size"
+msgstr "Kehtetu faili suurus"
+
+msgid "File size exceeds max_filesize %s"
+msgstr "Faili suurus ületab max_filesize %s"
+
+msgid "%s already exists"
+msgstr "%s on juba olemas"
+
+msgid "Invalid image / failed getimagesize()"
+msgstr "Kehtetu pilt / getimagesize() ebaõnnestus"
+
+msgid "Failed to resize image"
+msgstr "Pildi suuruse muutmine ebaõnnestus"
+
+msgid "imagejpeg() failed to create and resize the image"
+msgstr "imagejpeg() ei suutnud pilti luua ja selle suurust muuta"
+
+msgid "Failed to open stream: No such directory to put into"
+msgstr "Voo avamine ebaõnnestus: sellist kataloogi pole, kuhu panna"
+
+msgid "Failed to open output stream"
+msgstr "Väljundvoo avamine ebaõnnestus"
+
+msgid "Failed to open input stream"
+msgstr "Sisendvoo avamine ebaõnnestus"

@@ -1,0 +1,95 @@
+msgid ""
+msgstr ""
+
+msgid "%s is required"
+msgstr "необходимо задать %s"
+
+msgid "Required"
+msgstr "Необходимый"
+
+msgid "%s must have at least %s characters"
+msgstr "%s должен состоять как минимум из %s символов"
+
+msgid "Must have at least %s characters"
+msgstr "Должен состоять как минимум из %s символов"
+
+msgid "%s must have at most %s characters"
+msgstr "%s должен состоять максимум из %s символов"
+
+msgid "Must have at most %s characters"
+msgstr "Должен состоять максимум из %s символов"
+
+msgid "Create the destination path of the folder name"
+msgstr "Создайте путь назначения имени папки"
+
+msgid "Add files"
+msgstr "Добавить файлы"
+
+msgid "Start upload"
+msgstr "Начать загрузку"
+
+msgid "Cancel all uploads"
+msgstr "Отменить все загрузки"
+
+msgid "en"
+msgstr "en"
+
+msgid "et"
+msgstr "et"
+
+msgid "ru"
+msgstr "ru"
+
+msgid "Uploaded file exceeds upload_max_filesize directive in php.ini"
+msgstr "Загруженный файл превышает директиву upload_max_filesize в php.ini"
+
+msgid "Uploaded file exceeds MAX_FILE_SIZE directive specified in the HTML form"
+msgstr "Загруженный файл превышает директиву MAX_FILE_SIZE, указанную в HTML-форме"
+
+msgid "The uploaded file was only partially uploaded"
+msgstr "Загруженный файл был загружен только частично"
+
+msgid "Failed to move uploaded file"
+msgstr "Не удалось переместить загруженный файл"
+
+msgid "Missing a temporary folder"
+msgstr "Отсутствует временная папка"
+
+msgid "Failed to write file to disk"
+msgstr "Не удалось записать файл на диск"
+
+msgid "A PHP extension stopped the file upload"
+msgstr "Расширение PHP остановило загрузку файла"
+
+msgid "Filetype not allowed"
+msgstr "Недопустимый тип файла"
+
+msgid "Invalid image type"
+msgstr "Недопустимый тип изображения"
+
+msgid "Invalid file size"
+msgstr "Недопустимый размер файла"
+
+msgid "File size exceeds max_filesize %s"
+msgstr "Размер файла превышает max_filesize %s"
+
+msgid "%s already exists"
+msgstr "%s уже существует"
+
+msgid "Invalid image / failed getimagesize()"
+msgstr "Недопустимое изображение / ошибка getimagesize()"
+
+msgid "Failed to resize image"
+msgstr "Не удалось изменить размер изображения"
+
+msgid "imagejpeg() failed to create and resize the image"
+msgstr "imagejpeg() не удалось создать и изменить размер изображения"
+
+msgid "Failed to open stream: No such directory to put into"
+msgstr "Не удалось открыть поток: нет такого каталога для размещения"
+
+msgid "Failed to open output stream"
+msgstr "Не удалось открыть выходной поток"
+
+msgid "Failed to open input stream"
+msgstr "Не удалось открыть входной поток"
