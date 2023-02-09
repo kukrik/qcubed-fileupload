@@ -237,17 +237,3 @@ class FileUploadBase extends FileUploadBaseGen
         }
     }
 }
-
-
-
-// https://stackoverflow.com/questions/30331322/how-can-i-check-if-a-object-is-an-instance-of-a-specific-class
-
-// https://stackhowto.com/how-to-check-if-an-object-is-an-instance-of-a-specific-class-in-php/
-
-// https://www.php.net/manual/en/language.operators.type.php
-
-// https://www.educative.io/answers/what-is-the-instanceof-keyword-in-php
-
-
-
-
