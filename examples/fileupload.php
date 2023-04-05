@@ -17,20 +17,15 @@ use QCubed\Action\ActionParams;
 
 class ExamplesForm extends Form
 {
-    /**
-     * @var
-     */
     protected $objUpload;
     protected $btnAddFiles;
     protected $btnAllStart;
     protected $btnAllCancel;
 
-    ///////////////////
     protected $btnEn;
     protected $btnEt;
     protected $btnRu;
     protected $txtPathText;
-    ///////////////////
 
     /**
      * @return void

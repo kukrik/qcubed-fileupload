@@ -41,6 +41,8 @@ class ExamplesForm extends Form
     protected $intEditFilesId = null;
     protected $intDeleteId = null;
 
+    protected $newPath;
+    protected $arrAllowed = array('jpg', 'jpeg', 'bmp', 'png', 'webp', 'gif');
     protected $tempFolders = ['thumbnail', 'medium', 'large'];
 
     ////////////////////////////
@@ -203,11 +205,10 @@ class ExamplesForm extends Form
 
     public function View_render(Files $objFiles)
     {
-        $allowed = array('jpg', 'jpeg', 'bmp', 'png', 'webp', 'gif');
         $ext = strtolower(pathinfo(APP_UPLOADS_DIR . $objFiles->Path, PATHINFO_EXTENSION));
 
         $strHtm = '<span class="preview">';
-        if (in_array($ext, $allowed)) {
+        if (in_array($ext, $this->arrAllowed)) {
             $strHtm .= '<img src="' . APP_UPLOADS_TEMP_URL . '/_files/thumbnail' . $objFiles->Path . '">';
         } else {
             $strHtm .= $this->getFileIconExtension($ext);
@@ -306,24 +307,34 @@ class ExamplesForm extends Form
     protected function btnSave_Click(ActionParams $params)
     {
         $obj = Files::load($this->intEditFilesId);
+        $parts = pathinfo(APP_UPLOADS_DIR . $obj->Path);
+        $files = glob($parts['dirname'] . '/*', GLOB_NOSORT);
 
         if ($this->txtFileName->Text) {
             if (is_file(APP_UPLOADS_DIR . $obj->Path)) {
 
-                $parts = pathinfo(APP_UPLOADS_DIR . $obj->Path);
-                $newPath = $parts['dirname'] . '/' . trim($this->txtFileName->Text) . '.' . strtolower($parts['extension']);
-                $this->rename(APP_UPLOADS_DIR . $obj->Path, $newPath);
+                if (in_array($parts['dirname'] . '/' . trim($this->txtFileName->Text) . '.' . strtolower($parts['extension']), $files)) {
+                    $inc = 1;
+                    while (file_exists($parts['dirname'] . '/' . trim($this->txtFileName->Text) . '-' . $inc . '.' . strtolower($parts['extension']))) $inc++;
+                    $this->newPath = $parts['dirname'] . '/' . trim($this->txtFileName->Text) . '-' . $inc . '.' . strtolower($parts['extension']);
+                    $this->rename(APP_UPLOADS_DIR . $obj->Path, $this->newPath);
+                } else {
+                    $this->newPath = $parts['dirname'] . '/' . trim($this->txtFileName->Text) . '.' . strtolower($parts['extension']);
+                    $this->rename(APP_UPLOADS_DIR . $obj->Path, $this->newPath);
+                }
 
-                foreach ($this->tempFolders as $tempFolder) {
-                    if (is_file(APP_UPLOADS_TEMP_DIR . '/_files/' . $tempFolder . $obj->Path)) {
-                        $this->rename(APP_UPLOADS_TEMP_DIR . '/_files/' . $tempFolder . $obj->Path, APP_UPLOADS_TEMP_DIR . '/_files/' . $tempFolder . $this->getRelativePath($newPath));
+                if (in_array(strtolower($parts['extension']), $this->arrAllowed)) {
+                    foreach ($this->tempFolders as $tempFolder) {
+                        if (is_file(APP_UPLOADS_TEMP_DIR . '/_files/' . $tempFolder . $obj->Path)) {
+                            $this->rename(APP_UPLOADS_TEMP_DIR . '/_files/' . $tempFolder . $obj->Path, APP_UPLOADS_TEMP_DIR . '/_files/' . $tempFolder . $this->getRelativePath($this->newPath));
+                        }
                     }
                 }
             }
         }
 
-        $obj->Name = basename($newPath);
-        $obj->Path = $this->getRelativePath($newPath);
+        $obj->Name = basename($this->newPath);
+        $obj->Path = $this->getRelativePath($this->newPath);
         $obj->Mtime = time();
         $obj->save();
 
@@ -338,6 +349,10 @@ class ExamplesForm extends Form
 
     protected function rename($old, $new)
     {
+        //$inc = 1;
+        //while (file_exists($this->dirname . '/' . $this->name . '-' . $inc . '.' . $this->ext)) $inc++;
+        //$this->options['FileName'] = $this->dirname . '/' . $this->name . '-' . $inc . '.' . $this->ext;
+
         return (!file_exists($new) && file_exists($old)) ? rename($old, $new) : null;
     }
 

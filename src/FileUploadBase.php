@@ -30,7 +30,6 @@ use QCubed\Type;
  * @package QCubed\Plugin
  */
 
-
 class FileUploadBase extends FileUploadBaseGen
 {
     /** @var string[] */
@@ -118,7 +117,6 @@ class FileUploadBase extends FileUploadBaseGen
         }
 
         clearstatcache();
-
         /** clean $strRootUrl */
         $this->strRootUrl = $this->cleanPath($this->strRootUrl);
         /** clean $strTempUrl */
@@ -129,7 +127,6 @@ class FileUploadBase extends FileUploadBaseGen
         $this->strRootUrl = $isHttps ? 'https' : 'http' . '://' . $strHttpHost . (!empty($this->strRootUrl) ? '/' . $this->strRootUrl : '');
         $this->strTempUrl = $isHttps ? 'https' : 'http' . '://' . $strHttpHost . (!empty($this->strTempUrl) ? '/' . $this->strTempUrl : '');
     }
-
     /**
      * Clean path
      * @param string $path
@@ -145,7 +142,6 @@ class FileUploadBase extends FileUploadBaseGen
         }
         return str_replace('\\', '/', $path);
     }
-
     /**
      * @param $strName
      * @return array|bool|callable|float|int|mixed|string|null
@@ -169,7 +165,6 @@ class FileUploadBase extends FileUploadBaseGen
                 }
         }
     }
-
     /**
      * @param $strName
      * @param $mixValue
@@ -237,17 +232,3 @@ class FileUploadBase extends FileUploadBaseGen
         }
     }
 }
-
-
-
-// https://stackoverflow.com/questions/30331322/how-can-i-check-if-a-object-is-an-instance-of-a-specific-class
-
-// https://stackhowto.com/how-to-check-if-an-object-is-an-instance-of-a-specific-class-in-php/
-
-// https://www.php.net/manual/en/language.operators.type.php
-
-// https://www.educative.io/answers/what-is-the-instanceof-keyword-in-php
-
-
-
-

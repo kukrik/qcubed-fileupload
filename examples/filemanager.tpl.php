@@ -11,7 +11,6 @@
        object-fit: cover;
        object-position: 100% 0;
    }
-
 </style>
 
 <?php $this->RenderBegin(); ?>
