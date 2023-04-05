@@ -349,10 +349,6 @@ class ExamplesForm extends Form
 
     protected function rename($old, $new)
     {
-        //$inc = 1;
-        //while (file_exists($this->dirname . '/' . $this->name . '-' . $inc . '.' . $this->ext)) $inc++;
-        //$this->options['FileName'] = $this->dirname . '/' . $this->name . '-' . $inc . '.' . $this->ext;
-
         return (!file_exists($new) && file_exists($old)) ? rename($old, $new) : null;
     }
 
