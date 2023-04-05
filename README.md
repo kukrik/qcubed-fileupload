@@ -1,4 +1,4 @@
-# QCubed QCubed-4 FileUpload
+# QCubed-4 FileUpload
 
 
 ## QCubed v4 plugin created for FileUpload
