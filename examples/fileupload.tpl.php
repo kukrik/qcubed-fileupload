@@ -66,6 +66,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div id="alert-wrapper"></div>
+            <div class="alert-multi-wrapper"></div>
         </div>
     </div>
     <div class="row">

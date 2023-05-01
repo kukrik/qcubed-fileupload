@@ -81,6 +81,11 @@ span.ready {}
 .files button {
     margin-bottom: 5px;
 }
+
+.alert-multi-wrapper {
+    margin-top: -10px;
+}
+
 @media (max-width: 767px) {
     .fileupload-buttonbar .btn {
         margin-bottom: 5px;
