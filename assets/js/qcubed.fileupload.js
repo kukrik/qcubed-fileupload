@@ -884,6 +884,8 @@
                 show_alert(sprintf(languages[options.language].remove_invalid_inputs_Lbl, null), "danger");
             } else {
                 restrictionRemoving();
+                // Clear alerts and data
+                errorMessages.pop();
                 alert_multi_wrapper.innerHTML = "";
             }
 
