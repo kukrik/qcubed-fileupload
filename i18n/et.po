@@ -1,95 +1,153 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: QCubed-4 FileUpload translation\n"
+"POT-Creation-Date: 2024-03-04 17:10+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Tiit Papp <tiit.papp@gmail.com>\n"
+"Language-Team: tiit.papp@gmail.com\n"
+"Language: et\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.2\n"
+"X-Poedit-KeywordsList: t;p\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SearchPath-0: examples\n"
+"X-Poedit-SearchPath-1: src\n"
 
-msgid "%s is required"
-msgstr "%s on nõutav"
+#: examples/filemanager.php:111
+msgid "Search..."
+msgstr "Otsi…"
 
-msgid "Required"
-msgstr "Nõutav"
+#: examples/filemanager.php:140
+msgid "I'll cancel"
+msgstr "Ma loobun"
 
-msgid "%s must have at least %s characters"
-msgstr "%s peab olema vähemalt %s tähemärki"
+#: examples/filemanager.php:145
+msgid "Success"
+msgstr "Edu"
 
-msgid "%s must have at most %s characters"
-msgstr "%s peab koosnema maksimaalselt %s tähemärki"
+#: examples/filemanager.php:147
+msgid "OK"
+msgstr "OK"
 
-msgid "Must have at least %s characters"
-msgstr "Peab olema vähemalt %s tähemärki"
-
-msgid "Must have at most %s characters"
-msgstr "Peab olema maksimaalselt %s tähemärki"
-
+#: examples/fileupload.php:56
 msgid "Create the destination path of the folder name"
 msgstr "Looge kausta nimele sihttee"
 
+#: examples/fileupload.php:63
 msgid "Add files"
 msgstr "Lisa failid"
 
+#: examples/fileupload.php:70
 msgid "Start upload"
 msgstr "Alusta üleslaadimist"
 
+#: examples/fileupload.php:77
 msgid "Cancel all uploads"
 msgstr "Tühista kõik üleslaadimised"
 
-msgid "en"
-msgstr "en"
-
-msgid "et"
-msgstr "et"
-
-msgid "ru"
-msgstr "ru"
-
+#: src/UploadHandler.php:116
 msgid "Uploaded file exceeds upload_max_filesize directive in php.ini"
 msgstr "Üleslaaditud fail ületab faili php.ini direktiivi upload_max_filesize"
 
+#: src/UploadHandler.php:117
 msgid "Uploaded file exceeds MAX_FILE_SIZE directive specified in the HTML form"
 msgstr "Üleslaaditud fail ületab HTML-vormis määratud MAX_FILE_SIZE direktiivi"
 
+#: src/UploadHandler.php:118
 msgid "The uploaded file was only partially uploaded"
 msgstr "Üleslaaditud fail laaditi üles ainult osaliselt"
 
+#: src/UploadHandler.php:119
 msgid "Failed to move uploaded file"
 msgstr "Üleslaaditud faili teisaldamine ebaõnnestus"
 
+#: src/UploadHandler.php:120
 msgid "Missing a temporary folder"
 msgstr "Puudub ajutine kaust"
 
+#: src/UploadHandler.php:121
 msgid "Failed to write file to disk"
 msgstr "Faili kettale kirjutamine ebaõnnestus"
 
+#: src/UploadHandler.php:122
 msgid "A PHP extension stopped the file upload"
 msgstr "PHP laiendus peatas faili üleslaadimise"
 
+#: src/UploadHandler.php:123
 msgid "Filetype not allowed"
 msgstr "Failitüüp pole lubatud"
 
+#: src/UploadHandler.php:124
 msgid "Invalid image type"
 msgstr "Kehtetu pilditüüp"
 
+#: src/UploadHandler.php:125
 msgid "Invalid file size"
 msgstr "Kehtetu faili suurus"
 
+#: src/UploadHandler.php:126
+#, php-format
 msgid "File size exceeds max_filesize %s"
 msgstr "Faili suurus ületab max_filesize %s"
 
+#: src/UploadHandler.php:127
+#, php-format
 msgid "%s already exists"
 msgstr "%s on juba olemas"
 
+#: src/UploadHandler.php:128
 msgid "Invalid image / failed getimagesize()"
 msgstr "Kehtetu pilt / getimagesize() ebaõnnestus"
 
+#: src/UploadHandler.php:129
 msgid "Failed to resize image"
 msgstr "Pildi suuruse muutmine ebaõnnestus"
 
-msgid "imagejpeg() failed to create and resize the image"
-msgstr "imagejpeg() ei suutnud pilti luua ja selle suurust muuta"
+#: src/UploadHandler.php:130
+msgid "The resizeImage() function failed to create and resize the image"
+msgstr "Funktsioon resizeImage() ei suutnud pilti luua ja selle suurust muuta"
 
+#: src/UploadHandler.php:131
 msgid "Failed to open stream: No such directory to put into"
 msgstr "Voo avamine ebaõnnestus: sellist kataloogi pole, kuhu panna"
 
+#: src/UploadHandler.php:132
 msgid "Failed to open output stream"
 msgstr "Väljundvoo avamine ebaõnnestus"
 
+#: src/UploadHandler.php:133
 msgid "Failed to open input stream"
 msgstr "Sisendvoo avamine ebaõnnestus"
+
+#: src/UploadHandler.php:555
+msgid "Unable to deal with image type"
+msgstr "Pilditüübiga ei saa hakkama"
+
+#~ msgid "%s is required"
+#~ msgstr "%s on nõutav"
+
+#~ msgid "Required"
+#~ msgstr "Nõutav"
+
+#~ msgid "%s must have at least %s characters"
+#~ msgstr "%s peab olema vähemalt %s tähemärki"
+
+#~ msgid "%s must have at most %s characters"
+#~ msgstr "%s peab koosnema maksimaalselt %s tähemärki"
+
+#~ msgid "Must have at least %s characters"
+#~ msgstr "Peab olema vähemalt %s tähemärki"
+
+#~ msgid "Must have at most %s characters"
+#~ msgstr "Peab olema maksimaalselt %s tähemärki"
+
+#~ msgid "en"
+#~ msgstr "en"
+
+#~ msgid "et"
+#~ msgstr "et"
+
+#~ msgid "ru"
+#~ msgstr "ru"

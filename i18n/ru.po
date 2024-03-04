@@ -1,95 +1,153 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: QCubed-4 FileUpload translation\n"
+"POT-Creation-Date: 2024-03-04 17:14+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Tiit Papp <tiit.papp@gmail.com>\n"
+"Language-Team: tiit.papp@gmail.com\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.2\n"
+"X-Poedit-KeywordsList: t;p\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SearchPath-0: examples\n"
+"X-Poedit-SearchPath-1: src\n"
 
-msgid "%s is required"
-msgstr "необходимо задать %s"
+#: examples/filemanager.php:111
+msgid "Search..."
+msgstr "Поиск…"
 
-msgid "Required"
-msgstr "Необходимый"
+#: examples/filemanager.php:140
+msgid "I'll cancel"
+msgstr "я отменю"
 
-msgid "%s must have at least %s characters"
-msgstr "%s должен состоять как минимум из %s символов"
+#: examples/filemanager.php:145
+msgid "Success"
+msgstr ""
 
-msgid "Must have at least %s characters"
-msgstr "Должен состоять как минимум из %s символов"
+#: examples/filemanager.php:147
+msgid "OK"
+msgstr "Хорошо"
 
-msgid "%s must have at most %s characters"
-msgstr "%s должен состоять максимум из %s символов"
-
-msgid "Must have at most %s characters"
-msgstr "Должен состоять максимум из %s символов"
-
+#: examples/fileupload.php:56
 msgid "Create the destination path of the folder name"
 msgstr "Создайте путь назначения имени папки"
 
+#: examples/fileupload.php:63
 msgid "Add files"
 msgstr "Добавить файлы"
 
+#: examples/fileupload.php:70
 msgid "Start upload"
 msgstr "Начать загрузку"
 
+#: examples/fileupload.php:77
 msgid "Cancel all uploads"
 msgstr "Отменить все загрузки"
 
-msgid "en"
-msgstr "en"
-
-msgid "et"
-msgstr "et"
-
-msgid "ru"
-msgstr "ru"
-
+#: src/UploadHandler.php:116
 msgid "Uploaded file exceeds upload_max_filesize directive in php.ini"
 msgstr "Загруженный файл превышает директиву upload_max_filesize в php.ini"
 
+#: src/UploadHandler.php:117
 msgid "Uploaded file exceeds MAX_FILE_SIZE directive specified in the HTML form"
 msgstr "Загруженный файл превышает директиву MAX_FILE_SIZE, указанную в HTML-форме"
 
+#: src/UploadHandler.php:118
 msgid "The uploaded file was only partially uploaded"
 msgstr "Загруженный файл был загружен только частично"
 
+#: src/UploadHandler.php:119
 msgid "Failed to move uploaded file"
 msgstr "Не удалось переместить загруженный файл"
 
+#: src/UploadHandler.php:120
 msgid "Missing a temporary folder"
 msgstr "Отсутствует временная папка"
 
+#: src/UploadHandler.php:121
 msgid "Failed to write file to disk"
 msgstr "Не удалось записать файл на диск"
 
+#: src/UploadHandler.php:122
 msgid "A PHP extension stopped the file upload"
 msgstr "Расширение PHP остановило загрузку файла"
 
+#: src/UploadHandler.php:123
 msgid "Filetype not allowed"
 msgstr "Недопустимый тип файла"
 
+#: src/UploadHandler.php:124
 msgid "Invalid image type"
 msgstr "Недопустимый тип изображения"
 
+#: src/UploadHandler.php:125
 msgid "Invalid file size"
 msgstr "Недопустимый размер файла"
 
+#: src/UploadHandler.php:126
+#, php-format
 msgid "File size exceeds max_filesize %s"
 msgstr "Размер файла превышает max_filesize %s"
 
+#: src/UploadHandler.php:127
+#, php-format
 msgid "%s already exists"
 msgstr "%s уже существует"
 
+#: src/UploadHandler.php:128
 msgid "Invalid image / failed getimagesize()"
 msgstr "Недопустимое изображение / ошибка getimagesize()"
 
+#: src/UploadHandler.php:129
 msgid "Failed to resize image"
 msgstr "Не удалось изменить размер изображения"
 
-msgid "imagejpeg() failed to create and resize the image"
-msgstr "imagejpeg() не удалось создать и изменить размер изображения"
+#: src/UploadHandler.php:130
+msgid "The resizeImage() function failed to create and resize the image"
+msgstr "Функции resizeImage() не удалось создать и изменить размер изображения"
 
+#: src/UploadHandler.php:131
 msgid "Failed to open stream: No such directory to put into"
 msgstr "Не удалось открыть поток: нет такого каталога для размещения"
 
+#: src/UploadHandler.php:132
 msgid "Failed to open output stream"
 msgstr "Не удалось открыть выходной поток"
 
+#: src/UploadHandler.php:133
 msgid "Failed to open input stream"
 msgstr "Не удалось открыть входной поток"
+
+#: src/UploadHandler.php:555
+msgid "Unable to deal with image type"
+msgstr "Невозможно разобраться с типом изображения"
+
+#~ msgid "%s is required"
+#~ msgstr "необходимо задать %s"
+
+#~ msgid "Required"
+#~ msgstr "Необходимый"
+
+#~ msgid "%s must have at least %s characters"
+#~ msgstr "%s должен состоять как минимум из %s символов"
+
+#~ msgid "Must have at least %s characters"
+#~ msgstr "Должен состоять как минимум из %s символов"
+
+#~ msgid "%s must have at most %s characters"
+#~ msgstr "%s должен состоять максимум из %s символов"
+
+#~ msgid "Must have at most %s characters"
+#~ msgstr "Должен состоять максимум из %s символов"
+
+#~ msgid "en"
+#~ msgstr "en"
+
+#~ msgid "et"
+#~ msgstr "et"
+
+#~ msgid "ru"
+#~ msgstr "ru"
