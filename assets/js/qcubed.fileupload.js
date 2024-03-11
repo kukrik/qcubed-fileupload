@@ -418,6 +418,8 @@
                 }
                 xhr.send(data);
             }
+
+            console.log(storedFiles)
         }
 
         //////////////////////////////////////////
