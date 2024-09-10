@@ -13,7 +13,6 @@
             url: null,
             previewMaxWidth: 80,
             previewMaxHeight: 80,
-            withCredentials: false
         }, options)
 
         // This unit set to a new array
@@ -27,7 +26,6 @@
         // This unit is set to the number of interrupted upload files
         let interruptedFiles = 0;
         // This unit set to an checked files array
-        const checkedFiles = [];
 
         // Arrays for indexing invalid inputs
         const storedAcceptFileTypes = []; // data-error_type="1"
@@ -208,8 +206,10 @@
             alert_multi_wrapper.innerHTML = "";
 
             const files = e.target.files;
-            const filesArr = Array.prototype.slice.call(files);
-            filesArr.forEach(function (f) {
+            for (var i = 0; i < files.length; i++) {
+                const f = files[i];
+                const url = URL.createObjectURL(f);
+
                 f.started = false;
                 f.complete = false;
                 storedFiles.push(f);
@@ -233,12 +233,10 @@
                 if (options.showIcons) {
                     previewSpan.innerHTML = getFileIconExtension(ext);
                 } else if (f.type.match("image.*")) {
-                    img.src = URL.createObjectURL(f);
+
+                    img.src = url;
                     img.width = options.previewMaxWidth;
                     img.height = options.previewMaxHeight;
-                    img.onload = function () {
-                        URL.revokeObjectURL(this.src);
-                    }
                     previewSpan.appendChild(img);
                 } else {
                     previewSpan.innerHTML = getFileIconExtension(ext);
@@ -319,7 +317,7 @@
                 list.appendChild(nameTd);
                 list.appendChild(sizeTd);
                 list.appendChild(btnTd);
-            });
+            };
 
             const children = document.querySelectorAll(".cancel");
             for (let i = 0, len = children.length; i < len; i++) {
@@ -402,7 +400,6 @@
             } else {
                 const xhr = new XMLHttpRequest();
                 let data = new FormData();
-                xhr.withCredentials = options.withCredentials;
 
                 f.started = true;
                 data.append("files", f);
@@ -450,7 +447,6 @@
 
             function uploadChunk(data, start, chunkEnd) {
                 const xhr = new XMLHttpRequest();
-                xhr.withCredentials = options.withCredentials;
 
                 if (options.url) {
                     xhr.open('POST', options.url, true);
@@ -460,8 +456,6 @@
                 xhr.upload.addEventListener("progress", updateProgress);
 
                 const blobEnd = chunkEnd - 1;
-                const contentRange = "bytes " + start + "-" + blobEnd + "/" + f.size;
-                xhr.setRequestHeader("Content-Range", contentRange);
                 xhr.send(data);
 
                 let progress_bar = document.querySelector('.progress-bar[data-name="' + cleanFileName(f.name) + '"]');
@@ -487,16 +481,35 @@
                             percent.innerText = `${Math.floor(totalPercentComplete) + "%"}`;
                         }
 
-                        if (chunkCounter === numberOfChunks) {
+                        if (this.response) {
+                            const response = JSON.parse(this.response);
+
+                            response.started = true;
+                            response.complete = false;
+
+                            let output = {
+                                "filename": response.filename,
+                                "error": response.error,
+                            }
+
+                            if (response.error) {
+                                text_error.innerText = response.error;
+                                error_bubble.classList.remove("hidden");
+
+                                progress_bar.classList.add("hidden");
+                                percent_bar.classList.add("hidden");
+                                cancel.classList.add("hidden");
+                                ready.classList.add("hidden");
+                            }
+                        } else if (chunkCounter === numberOfChunks) {
                             progress_bar.classList.add("hidden");
                             percent_bar.classList.add("hidden");
                             cancel.classList.add("hidden");
                             ready.classList.remove("hidden");
 
                             all_start.classList.add("disabled");
-                            all_start.setAttribute('disabled', 'disabled');
                             all_cancel.classList.add("disabled");
-                            all_cancel.setAttribute('disabled', 'disabled');
+                            done_button.classList.remove("hidden");
                         }
                     }
                 }
@@ -508,30 +521,18 @@
                         response.started = true;
                         response.complete = true;
 
-                        let text_error = document.querySelector('.text-error[data-name="' + cleanFileName(response.filename) + '"]');
-                        let ready = document.querySelector('.ready[data-name="' + cleanFileName(response.filename) + '"]');
-                        let error_bubble = document.querySelector('.error-bubble[data-name="' + cleanFileName(response.filename) + '"]');
-
                         let output = {
-                            "check": response.check,
-                            "msg": response.msg,
                             "filename": response.filename,
-                            "type": response.type,
                             "error": response.error,
-                        };
-
-                        if (response.check === "false" && response.msg !== null) {
-                            text_error.innerText = response.msg;
                         }
 
-                        if (response.check === "true") {
-                            text_error.innerText = response.msg /*? response.msg : ''*/;
-                            ready.classList.add("hidden");
-                            error_bubble.classList.remove("hidden");
-                            checkedFiles.push(output);
+                        if (response.error) {
+                            text_error.innerText = response.error;
+                            interruptedFiles++;
                         }
 
                         uploadedFiles.push(output);
+                        storedQueue.shift(output);
                     }
 
                     //We start one chunk in, as we have uploaded the first one.
@@ -544,8 +545,8 @@
                     } else {
                         f.complete = true;
                         checkQueue();
-                        uploadResponses(storedFiles, uploadedFiles, interruptedFiles, checkedFiles);
                     }
+                    uploadResponses(storedFiles, uploadedFiles, interruptedFiles);
                 }
 
                 xhr.onerror = function (e) {
@@ -569,50 +570,70 @@
             let percent = document.querySelector('.percent[data-name="' + i + '"]');
             let cancel = document.querySelector('.cancel[data-name="' + i + '"]');
             let ready = document.querySelector('.ready[data-name="' + i + '"]');
+            let error_bubble = document.querySelector('.error-bubble[data-name="' + i + '"]');
+            let text_error = document.querySelector('.text-error[data-name="' + i + '"]');
 
             progress_bar.classList.remove("hidden");
             percent_bar.classList.remove("hidden");
 
             xhr.upload.addEventListener("progress", function (e) {
                 if (e.lengthComputable) {
-                    if (xhr) {
-                        // Get the loaded amount and total filesize (bytes)
-                        let loaded = e.loaded;
-                        let total = e.total
+                    // Calculate percent uploaded
+                    let percent_complete = (e.loaded / e.total) * 100;
 
-                        // Calculate percent uploaded
-                        let percent_complete = loaded / total * 100;
+                    // Update the progress text and progress bar
+                    progress.setAttribute("style", `width: ${Math.floor(percent_complete) + "%"}`);
+                    percent.innerText = `${Math.floor(percent_complete) + "%"}`;
 
-                        // Update the progress text and progress bar
-                        progress.setAttribute("style", `width: ${Math.floor(percent_complete) + "%"}`);
+                    if (e.loaded === e.total) {
+                        progress_bar.classList.add("hidden");
+                        percent_bar.classList.add("hidden");
+                        cancel.classList.add("hidden");
+                        ready.classList.remove("hidden");
 
-                        if (percent_complete > 0) {
-                            percent.innerText = `${Math.floor(percent_complete) + "%"}`;
-                        }
-
-                        if (loaded === total) {
-                            progress_bar.classList.add("hidden");
-                            percent_bar.classList.add("hidden");
-                            cancel.classList.add("hidden");
-                            ready.classList.remove("hidden");
-
-                            all_start.classList.add("disabled");
-                            all_start.setAttribute('disabled', 'disabled');
-                            all_cancel.classList.add("disabled");
-                            all_cancel.setAttribute('disabled', 'disabled');
-                        }
+                        all_start.classList.add("disabled");
+                        all_start.setAttribute('disabled', 'disabled');
+                        all_cancel.classList.add("disabled");
+                        all_cancel.setAttribute('disabled', 'disabled');
                     }
                 }
-            });
+            })
+
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    const response = JSON.parse(xhr.responseText);
+
+                    if (response.error) {
+                        text_error.innerText = response.error;
+                        ready.classList.add("hidden");
+                        error_bubble.classList.remove("hidden");
+
+                        progress_bar.classList.add("hidden");
+                        percent_bar.classList.add("hidden");
+                        cancel.classList.add("hidden");
+                        interruptedFiles++;
+                    }
+                } else {
+                    text_error.innerText = response.error;
+                    error_bubble.classList.remove("hidden");
+                }
+            }
+
+            uploadResponses(storedFiles, uploadedFiles, interruptedFiles);
+
+            xhr.onerror = function () {
+                text_error.innerText = "An error occurred during the upload.";
+                error_bubble.classList.remove("hidden");
+            }
         }
 
         // xhr load handler (transfer complete)
         function uploadComplete(xhr, i) {
             xhr.upload.addEventListener("load", function () {
-                xhr.onreadystatechange = function () {
-                    if (this.readyState === 4 && this.status === 200) {
-                        if (this.response) {
-                            const response = JSON.parse(this.response);
+                xhr.onload = function () { // Määra onload otse siia
+                    if (xhr.status === 200) { // Vaid siis, kui üleslaadimine on edukas
+                        if (xhr.response) {
+                            const response = JSON.parse(xhr.response);
                             response.started = true;
                             response.complete = true;
 
@@ -622,34 +643,34 @@
 
                             if (response.hasOwnProperty("filename")) {
                                 let output = {
-                                    "check": response.check,
-                                    "msg": response.msg,
                                     "filename": response.filename,
                                     "error": response.error,
                                 };
 
-                                if (response.check === "false" && response.msg !== null) {
-                                    text_error.innerText = response.msg;
+                                if (response.error) {
+                                    text_error.innerText = response.error;
                                 }
 
-                                if (response.check === "true") {
-                                    text_error.innerText = response.msg/* ? response.msg : ''*/;
+                                if (response.error) {
+                                    text_error.innerText = response.error;
                                     ready.classList.add("hidden");
                                     error_bubble.classList.remove("hidden");
-                                    checkedFiles.push(output);
+                                    interruptedFiles++;
                                 }
 
                                 uploadedFiles.push(output);
                                 storedQueue.shift(output);
                                 i.complete = true;
                                 checkQueue();
-
-                                uploadResponses(storedFiles, uploadedFiles, interruptedFiles, checkedFiles);
                             }
+
+                            uploadResponses(storedFiles, uploadedFiles, interruptedFiles);
                         }
+                    } else {
+                        console.error('Upload failed with status:', xhr.status);
                     }
                 }
-            });
+            })
         }
 
         // xhr error handler
@@ -670,20 +691,24 @@
                 error_bubble.classList.remove("hidden");
                 interruptedFiles++;
             });
+
+            uploadResponses(storedFiles, uploadedFiles, interruptedFiles);
         }
 
         //////////////////////////////////////////
 
-        function uploadResponses(s, u, i, c) {
-            if (s.length === u.length && i === 0 && c.length === 0) {
-                show_alert(languages[options.language].file_transfer_completed_successfully_Lbl, "success");
-                fileupload_donebar.classList.remove("hidden");
-            } else if ((s.length === u.length + i) && u.length === c.length) {
-                show_alert(languages[options.language].file_transfer_failed_completely_Lbl, "warning");
-                fileupload_donebar.classList.remove("hidden");
-            } else if ((s.length === u.length + i) && (u.length !== c.length)) {
-                show_alert(languages[options.language].file_transfer_failed_partially_Lbl, "warning");
-                fileupload_donebar.classList.remove("hidden");
+        function uploadResponses(s, u, i) {
+            if (s.length === u.length) {
+                if ((s.length === u.length) && i === 0) {
+                    show_alert(languages[options.language].file_transfer_completed_successfully_Lbl, "success");
+                    fileupload_donebar.classList.remove("hidden");
+                } else if (u.length === u.length && u.length === i) {
+                    show_alert(languages[options.language].file_transfer_failed_completely_Lbl, "danger");
+                    fileupload_donebar.classList.remove("hidden");
+                } else if ((s.length === u.length) && u.length !== i) {
+                    show_alert(languages[options.language].file_transfer_failed_partially_Lbl, "warning");
+                    fileupload_donebar.classList.remove("hidden");
+                }
             }
         }
 
@@ -932,7 +957,6 @@
                 storedFiles.pop();
                 storedQueue.pop();
                 uploadedFiles.pop();
-                checkedFiles.pop();
             }
         }
 
