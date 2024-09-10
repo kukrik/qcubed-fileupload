@@ -86,7 +86,7 @@ class ExamplesForm extends Form
         //$this->objUpload->MaxFileSize = 1024 * 1024 * 2; // 2 MB // Default null
         //$this->objUpload->MinFileSize = 500000; // 500 kb // Default null
         //$this->objUpload->ChunkUpload = false; // Default true
-        //$this->objUpload->MaxChunkSize = 1024 * 1024 * 10; // 10 MB // Default 5 MB
+        $this->objUpload->MaxChunkSize = 1024 * 1024; // * 10; // 10 MB // Default 5 MB
         //$this->objUpload->LimitConcurrentUploads = 5; // Default 2
         $this->objUpload->Url = 'php/'; // Default null
         //$this->objUpload->PreviewMaxWidth = 120; // Default 80

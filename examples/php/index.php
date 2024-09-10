@@ -1,6 +1,7 @@
 <?php
 
-require_once('../qcubed.inc.php');
+require_once ('../qcubed.inc.php');
+require_once ('../../src/UploadHandler.php');
 
 use QCubed\Plugin\UploadHandler;
 

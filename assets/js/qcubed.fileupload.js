@@ -435,11 +435,11 @@
                 const chunk = f.slice(start, chunkEnd);
 
                 const data = new FormData();
-
                 data.append("chunkEnabled", "true");
                 data.append('files', chunk, f.name);
                 data.append('chunk', chunkCounter);
-                data.append('chunks', numberOfChunks);
+                data.append('index', start);
+                data.append('count', numberOfChunks);
 
                 //created the chunk, now upload it
                 uploadChunk(data, start, chunkEnd);
@@ -557,7 +557,7 @@
                     cancel.classList.add("hidden");
                     error_bubble.classList.remove("hidden");
                     interruptedFiles++;
-                };
+                }
             }
         }
 
