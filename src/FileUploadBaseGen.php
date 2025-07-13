@@ -2,14 +2,9 @@
 
 namespace QCubed\Plugin;
 
-use QCubed as Q;
-use QCubed\Control;
-use QCubed\Bootstrap as Bs;
+use QCubed\Control\Panel;
 use QCubed\Exception\Caller;
 use QCubed\Exception\InvalidCast;
-use QCubed\ModelConnector\Param as QModelConnectorParam;
-use QCubed\Project\Control\ControlBase;
-use QCubed\Project\Application;
 use QCubed\Type;
 
 /**
@@ -43,38 +38,45 @@ use QCubed\Type;
  * @package QCubed\Plugin
  */
 
-class FileUploadBaseGen extends Q\Control\Panel
+class FileUploadBaseGen extends Panel
 {
-    /** @var string */
-    protected $strLanguage = null;
+    /** @var string|null */
+    protected ?string $strLanguage = null;
     /** @var boolean */
-    protected $blnMultipleUploads = null;
+    protected ?bool $blnMultipleUploads = null;
     /** @var boolean */
-    protected $blnShowIcons = null;
-    /** @var array */
-    protected $arrAcceptFileTypes = null;
-    /** @var integer */
-    protected $intMaxNumberOfFiles = null;
-    /** @var integer */
-    protected $intMaxFileSize = null;
-    /** @var integer */
-    protected $intMinFileSize = null;
+    protected ?bool $blnShowIcons = null;
+    /** @var array|null */
+    protected ?array $arrAcceptFileTypes = null;
+    /** @var integer|null */
+    protected ?int $intMaxNumberOfFiles = null;
+    /** @var integer|null */
+    protected ?int $intMaxFileSize = null;
+    /** @var integer|null */
+    protected ?int $intMinFileSize = null;
     /** @var boolean */
-    protected $blnChunkUpload = null;
-    /** @var integer */
-    protected $intMaxChunkSize = null;
-    /** @var integer */
-    protected $intLimitConcurrentUploads = null;
-    /** @var string */
-    protected $strUrl = null;
-    /** @var string */
-    protected $intPreviewMaxWidth = null;
-    /** @var string */
-    protected $intPreviewMaxHeight = null;
+    protected ?bool $blnChunkUpload = null;
+    /** @var integer|null */
+    protected ?int $intMaxChunkSize = null;
+    /** @var integer|null */
+    protected ?int $intLimitConcurrentUploads = null;
+    /** @var string|null */
+    protected ?string $strUrl = null;
+    /** @var string|null */
+    protected ?string $intPreviewMaxWidth = null;
+    /** @var string|null */
+    protected ?string $intPreviewMaxHeight = null;
     /** @var boolean */
-    protected $blnWithCredentials = null;
+    protected ?bool $blnWithCredentials = null;
 
-    protected function makeJqOptions()
+    /**
+     * Generates and returns an array of jQuery options based on the class properties.
+     * Each option is included if its corresponding property is not null.
+     * Calls the parent implementation to include any options from the parent class.
+     *
+     * @return array The generated array of jQuery options.
+     */
+    protected function makeJqOptions(): array
     {
         $jqOptions = parent::MakeJqOptions();
         if (!is_null($val = $this->Language)) {$jqOptions['language'] = $val;}
@@ -94,12 +96,27 @@ class FileUploadBaseGen extends Q\Control\Panel
         return $jqOptions;
     }
 
-    public function getJqSetupFunction()
+    /**
+     * Returns the name of the jQuery setup function to be used for initializing the component.
+     *
+     * @return string The jQuery setup function name.
+     */
+    public function getJqSetupFunction(): string
     {
         return 'fileUpload';
     }
 
-    public function __get($strName)
+    /**
+     * Magic method to retrieve the value of a property by its name.
+     * If the requested property is not defined in the current class, it attempts to retrieve
+     * the property value from the parent class. Throws an exception if the property is undefined.
+     *
+     * @param string $strName The name of the property being retrieved.
+     *
+     * @return mixed The value of the requested property, determined by the property name.
+     * @throws Caller If the property does not exist in the current or parent class.
+     */
+    public function __get(string $strName): mixed
     {
         switch ($strName) {
             case 'Language': return t($this->strLanguage);
@@ -127,7 +144,19 @@ class FileUploadBaseGen extends Q\Control\Panel
         }
     }
 
-    public function __set($strName, $mixValue)
+    /**
+     * Sets the value of a property dynamically by name, applying appropriate casting and validation.
+     * Updates corresponding options if the property is successfully set.
+     * If the property name is not recognized, defers to the parent implementation.
+     *
+     * @param string $strName The name of the property to set.
+     * @param mixed $mixValue The value to assign to the property. The type will be cast and validated as needed.
+     *
+     * @return void
+     * @throws InvalidCast Thrown if the value cannot be cast to the required type.
+     * @throws Caller Thrown if the property name is invalid and not handled by the parent implementation.
+     */
+    public function __set(string $strName, mixed $mixValue): void
     {
         switch ($strName) {
             case 'Language':
@@ -282,11 +311,12 @@ class FileUploadBaseGen extends Q\Control\Panel
     }
 
     /**
-     * If this control is attachable to a codegenerated control in a ModelConnector, this function will be
-     * used by the ModelConnector designer dialog to display a list of options for the control.
-     * @return QModelConnectorParam[]
-     **/
-    public static function getModelConnectorParams()
+     * Retrieves and returns an array of model connector parameters by merging those
+     * from the parent implementation with additional parameters specific to this class.
+     *
+     * @return array The merged array of model connector parameters.
+     */
+    public static function getModelConnectorParams(): array
     {
         return array_merge(parent::GetModelConnectorParams(), array());
     }

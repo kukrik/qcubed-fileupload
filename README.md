@@ -1,15 +1,15 @@
 # QCubed-4 FileUpload
 
 
-## QCubed v4 plugin created for FileUpload
+## QCubed-4 plugin created for FileUpload
 
-Many third-party plugins are difficult or inconvenient to fit for QCubed-4.
-Here it was decided to build the Fileupload plugin to fit the QCubed-4 framework as much as possible. Here we
-use javascript, a bit of jquery and PHP.
+Many third-party plugins are difficult or inconvenient to integrate with QCubed-4. In this case, we decided to build 
+the Fileupload plugin to fit the QCubed-4 framework as much as possible. Here we use JavaScript and a bit of jQuery. 
+This plugin works starting from PHP version 8.3+.
 
 See FileUploadBase and UploadHandler class for usage and configuration descriptions and use cases.
 
-![Image of kukrik](screenshot/examples_screenshot.jpg?raw=true)
+![Image of kukrik](screenshot/examples_screenshot.png?raw=true)
 
 ### Requirements
 First, you must check whether the conditions are met:
@@ -25,28 +25,29 @@ in FileUpload and Uploadhandler.
 
 The rest of the properties can be set as needed.
 
-| Property               | FileUpload | UploadHandler |
-|------------------------| --- | --- |
-| RootPath               | APP_UPLOADS_DIR | APP_UPLOADS_DIR |
-| RootUrl                | APP_UPLOADS_URL | - |
-| TempPath               | APP_UPLOADS_TEMP_DIR | APP_UPLOADS_TEMP_DIR |
-| TempUrl                | APP_UPLOADS_TEMP_URL | - |
-| StoragePath            | _files | _files |
-| FullStoragePath        | null | null |
-| Language (en, et, ru)  | en | - |
-| ShowIcons              | false | - |
-| AcceptFileTypes        | null | null |
-| MaxNumberOfFiles       | null | - |
-| MaxFileSize            | null | null |
-| MinFileSize            | null | - |
-| ChunkUpload            | true | - |
-| MaxChunkSize           | 5 MB | - |
+| Property | FileUpload | UploadHandler |
+|------| --- |---|
+| RootPath | APP_UPLOADS_DIR | APP_UPLOADS_DIR |
+| RootUrl | APP_UPLOADS_URL | - |
+| TempPath | APP_UPLOADS_TEMP_DIR | APP_UPLOADS_TEMP_DIR |
+| TempUrl | APP_UPLOADS_TEMP_URL | - |
+| StoragePath | _files | _files |
+| FullStoragePath | null | null |
+| Language (en, et, ru) | en | - |
+| ShowIcons | false | - |
+| AcceptFileTypes | null | null |
+| MaxNumberOfFiles | null | - |
+| MaxFileSize | null | null |
+| MinFileSize | null | - |
+| ChunkUpload | true | - |
+| MaxChunkSize | 5 MB | - |
 | LimitConcurrentUploads | 2 | - |
 | Url | null | - |
 | PreviewMaxWidth | 80 | - |
 | PreviewMaxHeight | 80 | - |
 | WithCredentials | false | - |
 | ImageResizeQuality | - | 85 |
+| PngLevel | - | 6 |
 | ImageResizeFunction ( imagecopyresampled or imagecopyresized) | - | imagecopyresampled |
 | ImageResizeSharpen | - | true |
 | TempFolders | - | ['thumbnail', 'medium', 'large'] |
@@ -55,7 +56,7 @@ The rest of the properties can be set as needed.
 | UploadExists (increment or overwrite) | - | increment |
 
 
-If you have not previously installed QCubed Bootstrap and twitter bootstrap, run the following actions on the command line of your main installation directory by Composer:
+If you have not previously installed QCubed-4 Bootstrap and twitter bootstrap, run the following actions on the command line of your main installation directory by Composer:
 
 ```
     composer require twbs/bootstrap v3.3.7
@@ -64,7 +65,6 @@ and
 
 ```
     composer require kukrik/qcubed-fileupload
-    composer require kukrik/bootstrap
-    composer require kukrik/select2
+    composer require qcubed-4/plugin-bootstrap
 ```
 

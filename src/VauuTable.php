@@ -2,18 +2,23 @@
 /**
  *
  * Borrowed DataGrid and adapted to own needs.
- * Removed restriction (renderPaginator()) from renderCaption()function.
- * And it allows to use the caption string which can be used for the table.
+ * Removed restriction (renderPaginator()) from the renderCaption()function.
+ * And it allows using the caption string which can be used for the table.
  * The purpose is to make the table as flexible as possible.
  *
  */
 
 namespace QCubed\Plugin;
 
-use QCubed as Q;
 use QCubed\Exception\Caller;
 use QCubed\Exception\InvalidCast;
+use Throwable;
 use QCubed\Control\FormBase;
+use QCubed\Control\TableBase;
+use QCubed\Event\DataGridSort;
+use QCubed\Event\CheckboxColumnClick;
+use QCubed\Action\AjaxControl;
+use QCubed\Action\StopPropagation;
 use QCubed\Project\Application;
 use QCubed\Table\ColumnBase;
 use QCubed\Project\Control\ControlBase;
@@ -31,7 +36,7 @@ use QCubed\Html;
  * Class VauuTable
  *
  * This class is designed primarily to work alongside the code generator, but it can be independent as well. It creates
- * an html table that displays data from the database. The data can possibly be sorted by clicking on the header cell
+ * an HTML table that displays data from the database. The data can possibly be sorted by clicking on the header cell
  * of the sort column.
  *
  * This grid also has close ties to the QDataGrid_CheckboxColumn to easily enable the addition of a column or columns
@@ -41,42 +46,42 @@ use QCubed\Html;
  * do that here.
  *
  * @property boolean $RenderAsHeader if true, all cells in the column will be rendered with a tag "th" tag instead of tag "td"
- * @property-read  QQClause $OrderByClause The sorting clause based on the selected headers.
  * @property  string $SortColumnId The id of the currently sorted column. Does not change if columns are re-ordered.
  * @property  int $SortColumnIndex The index of the currently sorted column.
  * @property  int $SortDirection SortAscending or SortDescending.
  * @property  array $SortInfo An array containing the sort data, so you can save and restore it later if needed.
  * @package QCubed\Plugin\Control
  */
-class VauuTable extends \QCubed\Control\TableBase
+class VauuTable extends TableBase
 {
-    /** Numbers than can be used to multiply against the results of comparison functions to reverse the order. */
-    const SORT_ASCENDING = 1;
-    const SORT_DESCENDING = -1;
+    /** Numbers that can be used to multiply against the results of comparison functions to reverse the order. */
+    const int SORT_ASCENDING = 1;
+    const int SORT_DESCENDING = -1;
 
     /** @var boolean */
-    protected $blnHtmlEntities = true;
+    protected bool $blnHtmlEntities = true;
     /** @var boolean */
-    protected $blnRenderAsHeader = false;
+    protected bool $blnRenderAsHeader = false;
 
-    /** @var int Couter to generate column ids for columns that do not have them. */
-    protected $intLastColumnId = 0;
+    /** @var int Cuter to generate column IDs for columns that do not have them. */
+    protected int $intLastColumnId = 0;
 
-    /** @var  string Keeps track of current sort column. We do it by id so that the table can add/hide/show or rearrange columns and maintain the sort column. */
-    protected $strSortColumnId;
+    /** @var  string Keeps track of the current sort column. We do it by id so that the table can add/hide/show or rearrange columns and maintain the sort column. */
+    protected ?string $strSortColumnId = '';
 
     /** @var int The direction of the currently sorted column. */
-    protected $intSortDirection = self::SORT_ASCENDING;
+    protected int $intSortDirection = self::SORT_ASCENDING;
 
 
     /**
      * VauuTable constructor.
      *
      * @param ControlBase|FormBase $objParentObject
-     * @param null|string $strControlId
+     * @param string|null $strControlId
+     *
      * @throws Caller
      */
-    public function __construct($objParentObject, $strControlId = null)
+    public function __construct(ControlBase|FormBase $objParentObject, ?string $strControlId = null)
     {
         try {
             parent::__construct($objParentObject, $strControlId);
@@ -95,7 +100,7 @@ class VauuTable extends \QCubed\Control\TableBase
      *
      * @return string
      */
-    protected function renderCaption()
+    protected function renderCaption(): string
     {
         $strHtml = '';
         if ($this->strCaption) {
@@ -110,7 +115,7 @@ class VauuTable extends \QCubed\Control\TableBase
      * @return string
      * @throws Caller
      */
-    protected function renderPaginator()
+    protected function renderPaginator(): string
     {
         $objPaginator = $this->objPaginator;
         if (!$objPaginator) {
@@ -118,38 +123,40 @@ class VauuTable extends \QCubed\Control\TableBase
         }
 
         $strHtml = $objPaginator->render(false);
-        $strHtml = Q\Html::renderTag('span', ['class' => 'paginator-control'], $strHtml);
+        $strHtml = Html::renderTag('span', ['class' => 'paginator-control'], $strHtml);
         if ($this->strCaption) {
-            $strHtml = '<span>' . Q\QString::htmlEntities($this->strCaption) . '</span>' . $strHtml;
+            $strHtml = '<span>' . QString::htmlEntities($this->strCaption) . '</span>' . $strHtml;
         }
 
-        $strHtml = Q\Html::renderTag('caption', null, $strHtml);
-
-        return $strHtml;
+        return Html::renderTag('caption', null, $strHtml);
     }
 
     /**
      * Adds the actions for the table. Override to add additional actions. If you are detecting clicks
      * that need to cancel the default action, put those in front of this function.
+     * @throws Caller
      */
-    public function addActions()
+    public function addActions(): void
     {
-        $this->addAction(new Q\Event\CheckboxColumnClick(), new Q\Action\AjaxControl($this, 'CheckClick'));
-        $this->addAction(new Q\Event\CheckboxColumnClick(),
-            new Q\Action\StopPropagation()); // prevent check click from bubbling as a row click.
+        $this->addAction(new CheckboxColumnClick(), new AjaxControl($this, 'CheckClick'));
+        $this->addAction(new CheckboxColumnClick(),
+            new StopPropagation()); // prevent check click from bubbling as a row click.
 
-        $this->addAction(new Q\Event\DataGridSort(), new Q\Action\AjaxControl($this, 'SortClick'));
-        $this->addAction(new Q\Event\DataGridSort(), new Q\Action\StopPropagation());   // in case datagrid is nested
+        $this->addAction(new DataGridSort(), new AjaxControl($this, 'SortClick'));
+        $this->addAction(new DataGridSort(), new StopPropagation());   // in case datagrid is nested
     }
 
     /**
-     * An override to create an id for every column, since the id is what we use to track sorting.
+     * Adds a column at the specified index and ensures the column has a unique ID assigned.
      *
-     * @param int $intColumnIndex
-     * @param ColumnBase $objColumn
+     * @param int $intColumnIndex The index at which the column should be added.
+     * @param ColumnBase $objColumn The column object to be added.
+     *
+     * @return void
+     * @throws Caller
      * @throws InvalidCast
      */
-    public function addColumnAt($intColumnIndex, ColumnBase $objColumn)
+    public function addColumnAt(int $intColumnIndex, ColumnBase $objColumn): void
     {
         parent::addColumnAt($intColumnIndex, $objColumn);
         // Make sure the column has an Id, since we use that to track sorting.
@@ -159,13 +166,17 @@ class VauuTable extends \QCubed\Control\TableBase
     }
 
     /**
-     * Transfers clicks to any checkbox columns.
+     * Handles the click event on a DataGrid column, processing the action for a checkbox column.
      *
-     * @param $strFormId
-     * @param $strControlId
-     * @param $strParameter
+     * @param string $strFormId The ID of the form in which the DataGrid is included.
+     * @param string $strControlId The ID of the control being clicked.
+     * @param array $strParameter An associative array containing parameters for the click event, such as 'col' for the column index.
+     *
+     * @return void
+     * @throws Caller
+     * @throws InvalidCast
      */
-    protected function checkClick($strFormId, $strControlId, $strParameter)
+    protected function checkClick(string $strFormId, string $strControlId, array $strParameter): void
     {
         $intColumnIndex = $strParameter['col'];
         $objColumn = $this->getColumn($intColumnIndex, true);
@@ -176,12 +187,16 @@ class VauuTable extends \QCubed\Control\TableBase
     }
 
     /**
-     * Clears all checkboxes in checkbox columns. If you have multiple checkbox columns, you can specify which column
-     * to clear. Otherwise, it will clear all of them.
+     * Clears the checked items for DataGridCheckboxColumns. If a column ID is provided,
+     * only the checkbox column with the matching ID will have its checked items cleared.
+     * Otherwise, all checkbox columns will be cleared.
      *
-     * @param string|null $strColId
+     * @param string|null $strColId The optional ID of the checkbox column to clear.
+     *                              If null, all checkbox columns are cleared.
+     *
+     * @return void
      */
-    public function clearCheckedItems($strColId = null)
+    public function clearCheckedItems(?string $strColId = null): void
     {
         foreach ($this->objColumnArray as $objColumn) {
             if ($objColumn instanceof DataGridCheckboxColumn) {
@@ -193,14 +208,13 @@ class VauuTable extends \QCubed\Control\TableBase
     }
 
     /**
-     * Returns the checked item ids if the data grid has a QDataGrid_CheckboxColumn column. If there is more than
-     * one column, you can specify which column to want to query. If no id is specified, it
-     * will return the ids from the first column found. If no column was found, then null is returned.
+     * Retrieves the IDs of checked items from a DataGridCheckboxColumn.
      *
-     * @param mixed $strColId
-     * @return array|null
+     * @param string|null $strColId The ID of the column to retrieve checked item IDs for. If null, the first matching column is used.
+     *
+     * @return array|null An array of IDs of the checked items, or null if no matching column is found.
      */
-    public function getCheckedItemIds($strColId = null)
+    public function getCheckedItemIds(?string $strColId = null): ?array
     {
         foreach ($this->objColumnArray as $objColumn) {
             if ($objColumn instanceof DataGridCheckboxColumn) {
@@ -215,13 +229,17 @@ class VauuTable extends \QCubed\Control\TableBase
     }
 
     /**
-     * Processes clicks on a sortable column head.
+     * Handles the click event for sorting columns in a data table.
+     * Modifies a sorting direction and resets pagination if applicable.
      *
-     * @param string $strFormId
-     * @param string $strControlId
-     * @param mixed $mixParameter
+     * @param string $strFormId The ID of the form that triggered the event.
+     * @param string $strControlId The ID of the control that triggered the event.
+     * @param mixed $mixParameter The parameter indicating the column index to sort.
+     *
+     * @throws Caller
+     * @throws InvalidCast
      */
-    protected function sortClick($strFormId, $strControlId, $mixParameter)
+    protected function sortClick(string $strFormId, string $strControlId, mixed $mixParameter): void
     {
         $intColumnIndex = Type::cast($mixParameter, Type::INTEGER);
         $objColumn = $this->getColumn($intColumnIndex, true);
@@ -235,10 +253,6 @@ class VauuTable extends \QCubed\Control\TableBase
 
         $strId = $objColumn->Id;
 
-        if (!$objColumn) {
-            return;
-        }
-
         // Reset pagination (if applicable)
         if ($this->objPaginator) {
             $this->PageNumber = 1;
@@ -250,11 +264,11 @@ class VauuTable extends \QCubed\Control\TableBase
 
             // Are we currently sorting by this column?
             if ($this->strSortColumnId === $strId) {
-                // Yes we are currently sorting by this column
+                // Yes, we are currently sorting by this column.
 
                 // In Reverse?
                 if ($this->intSortDirection == self::SORT_DESCENDING) {
-                    // Yep -- unreverse the sort
+                    // Yep -- reverse the sort
                     $this->intSortDirection = self::SORT_ASCENDING;
                 } else {
                     // Nope -- can we reverse?
@@ -268,18 +282,22 @@ class VauuTable extends \QCubed\Control\TableBase
                 $this->intSortDirection = self::SORT_ASCENDING;
             }
         } else {
-            // It isn't -- clear all sort properties
+            // It isn't -- clear all-sort properties
             $this->intSortDirection = self::SORT_ASCENDING;
             $this->strSortColumnId = null;
         }
     }
 
     /**
-     * Override to return the header row to indicate when a column is sortable.
+     * Generates and returns the HTML for the header row(s) of a table.
      *
-     * @return string
+     * This method constructs the header rows based on the columns defined in
+     * the table and their associated properties, such as visibility, parameters,
+     * and sorting capabilities.
+     *
+     * @return string The HTML string representing the header row(s) of a table.
      */
-    protected function getHeaderRowHtml()
+    protected function getHeaderRowHtml(): string
     {
         $strToReturn = '';
         for ($i = 0; $i < $this->intHeaderRowCount; $i++) {
@@ -300,60 +318,64 @@ class VauuTable extends \QCubed\Control\TableBase
                                 $aParams['class'] = 'sortable';
                             }
                         }
-                        $strCells .= Q\Html::renderTag('th', $aParams, $strCellValue);
+                        $strCells .= Html::renderTag('th', $aParams, $strCellValue);
                     }
                 }
             }
-            $strToReturn .= Q\Html::renderTag('tr', $this->getHeaderRowParams(), $strCells);
+            $strToReturn .= Html::renderTag('tr', $this->getHeaderRowParams(), $strCells);
         }
 
         return $strToReturn;
     }
 
     /**
-     * Override to return sortable column info.
+     * Generates the content for a header cell in the data grid based on the provided column.
      *
-     * @param DataColumn $objColumn
-     * @return string
+     * @param DataColumn $objColumn The DataColumn object representing the current column header to process.
+     *
+     * @return string The HTML content for the header cell, including sort indicators and wrapping for accessibility.
      */
-    protected function getHeaderCellContent(DataColumn $objColumn)
+    protected function getHeaderCellContent(DataColumn $objColumn): string
     {
         $blnSortable = false;
         $strCellValue = $objColumn->fetchHeaderCellValue();
         if ($objColumn->HtmlEntities) {
-            $strCellValue = Q\QString::htmlEntities($strCellValue);
+            $strCellValue = QString::htmlEntities($strCellValue);
         }
-        $strCellValue = Q\Html::renderTag('span', null, $strCellValue);    // wrap in a span for positioning
+        $strCellValue = Html::renderTag('span', null, $strCellValue);    // wrap in a span for positioning
 
-        if ($this->strSortColumnId === $objColumn->Id) {
+        if ($this->strSortColumnId == $objColumn->Id) {
             if ($this->intSortDirection == self::SORT_ASCENDING) {
-                $strCellValue = $strCellValue . ' ' . Q\Html::renderTag('i', ['class' => 'fa fa-sort-desc fa-lg']);
+                $strCellValue = $strCellValue . ' ' . Html::renderTag('i', ['class' => 'fa fa-sort-desc fa-lg']);
             } else {
-                $strCellValue = $strCellValue . ' ' . Q\Html::renderTag('i', ['class' => 'fa fa-sort-asc fa-lg']);
+                $strCellValue = $strCellValue . ' ' . Html::renderTag('i', ['class' => 'fa fa-sort-asc fa-lg']);
             }
             $blnSortable = true;
         } else {
             if ($objColumn->OrderByClause) {    // sortable, but not currently being sorted
-                $strCellValue = $strCellValue . ' ' . Q\Html::renderTag('i',
+                $strCellValue = $strCellValue . ' ' . Html::renderTag('i',
                         ['class' => 'fa fa-sort fa-lg']);
                 $blnSortable = true;
             }
         }
 
         if ($blnSortable) {
-            // Wrap header cell in an html5 block-link to help with assistive technologies.
-            $strCellValue = Q\Html::renderTag('div', null, $strCellValue);
-            $strCellValue = Q\Html::renderTag('a', ['href' => 'javascript:;'],
-                $strCellValue); // action will be handled by qcubed.js click handler in qcubed.datagrid2()
+            // Wrap the header cell in a html5 block-link to help with assistive technologies.
+            $strCellValue = Html::renderTag('div', null, $strCellValue);
+            $strCellValue = Html::renderTag('a', ['href' => 'javascript:;'],
+                $strCellValue); // this action will be handled by qcubed.js click handler in qcubed.datagrid2()
         }
 
         return $strCellValue;
     }
 
     /**
-     * Override to enable the datagrid2 javascript.
+     * Initializes and creates the jQuery widget for the control
+     * and executes necessary JavaScript functionality.
+     *
+     * @return void
      */
-    protected function makeJqWidget()
+    protected function makeJqWidget(): void
     {
         parent::makeJqWidget();
         Application::executeJsFunction('qcubed.datagrid2', $this->ControlId);
@@ -361,17 +383,15 @@ class VauuTable extends \QCubed\Control\TableBase
 
 
     /**
-     * Returns the current state of the control to be able to restore it later.
+     * Retrieves the current state of the component, including sorting and pagination details.
      *
-     * @return mixed
+     * @return array|null An associative array representing the state with keys for sort column, sort direction, and page number.
      */
-    public function getState()
+    public function getState(): ?array
     {
         $state = array();
-        if ($this->strSortColumnId !== null) {
-            $state["c"] = $this->strSortColumnId;
-            $state["d"] = $this->intSortDirection;
-        }
+        $state["c"] = $this->strSortColumnId;
+        $state["d"] = $this->intSortDirection;
         if ($this->Paginator || $this->PaginatorAlternate) {
             $state["p"] = $this->PageNumber;
         }
@@ -379,11 +399,17 @@ class VauuTable extends \QCubed\Control\TableBase
     }
 
     /**
-     * Restore the state of the control.
+     * Updates the internal state of the object using the provided state array.
+     * Ensures that a sorting direction is restricted to defined constants and updates pagination if applicable.
      *
-     * @param mixed $state Previously saved state as returned by GetState above.
+     * @param mixed $state An associative array representing the state, where possible keys are:
+     *                     'c' - the column identifier for sorting.
+     *                     'd' - the sorting direction (integer, acceptable values defined by class constants).
+     *                     'p' - the current page number for pagination.
+     *
+     * @return void
      */
-    public function putState($state)
+    public function putState(mixed $state): void
     {
         // use the name as the column key because columns might be added or removed for some reason
         if (isset($state["c"])) {
@@ -392,7 +418,7 @@ class VauuTable extends \QCubed\Control\TableBase
         if (isset($state["d"])) {
             $this->intSortDirection = $state["d"];
             if ($this->intSortDirection != self::SORT_DESCENDING) {
-                $this->intSortDirection = self::SORT_ASCENDING;    // make sure its only one of two values
+                $this->intSortDirection = self::SORT_ASCENDING;    // make sure it's only one of two values
             }
         }
         if (isset($state["p"]) &&
@@ -404,11 +430,11 @@ class VauuTable extends \QCubed\Control\TableBase
 
     /**
      * Returns the index of the currently sorted column.
-     * Returns false if nothing selected.
+     * Returns false if nothing is selected.
      *
      * @return bool|int
      */
-    public function getSortColumnIndex()
+    public function getSortColumnIndex(): bool|int
     {
         if ($this->objColumnArray && ($count = count($this->objColumnArray))) {
             for ($i = 0; $i < $count; $i++) {
@@ -421,19 +447,16 @@ class VauuTable extends \QCubed\Control\TableBase
     }
 
     /**
-     * Return information on sorting the data. For SQL databases, this would be a QQClause. But since this just
-     * gets the clause from the currently active column, it could be anything.
+     * Retrieves the order-by-clause information based on the current sorting column and direction.
      *
-     * This clause should not affect counting or limiting.
-     *
-     * @return mixed
+     * @return mixed The order by a clause, the reverse order by clause if applicable, or null if no valid sorting information is available.
      */
-    public function getOrderByInfo()
+    public function getOrderByInfo(): mixed
     {
-        if ($this->strSortColumnId !== null) {
+        if (!($this->strSortColumnId == null)) {
             $objColumn = $this->getColumnById($this->strSortColumnId);
             assert($objColumn instanceof DataColumn);
-            if ($objColumn && $objColumn->OrderByClause) {
+            if ($objColumn->OrderByClause) {
                 if ($this->intSortDirection == self::SORT_ASCENDING) {
                     return $objColumn->OrderByClause;
                 } else {
@@ -452,11 +475,14 @@ class VauuTable extends \QCubed\Control\TableBase
     }
 
     /**
-     * @param string $strName
-     * @return bool|int|Keeps|mixed|null
-     * @throws Caller
+     * Magic method to retrieve the value of a property based on its name.
+     *
+     * @param string $strName The name of the property to retrieve.
+     *
+     * @return mixed Returns the value of the specified property. May return various types based on the property.
+     * @throws Caller Throws exception if the property does not exist or cannot be retrieved.
      */
-    public function __get($strName)
+    public function __get(string $strName): mixed
     {
         switch ($strName) {
             case 'HtmlEntities':
@@ -486,13 +512,19 @@ class VauuTable extends \QCubed\Control\TableBase
     }
 
     /**
-     * @param string $strName
-     * @param string $mixValue
-     * @throws Caller
-     * @throws InvalidCast
+     * Magic method to set properties dynamically. Handles setting of various
+     * predefined properties with type checking and validation.
+     *
+     * @param string $strName The name of the property to set.
+     * @param mixed $mixValue The value to assign to the specified property.
+     *
      * @return void
+     *
+     * @throws Caller Thrown if the property is not recognized or cannot be handled by the parent class.
+     * @throws InvalidCast Thrown if the provided value cannot be cast to the expected type.
+     * @throws Throwable
      */
-    public function __set($strName, $mixValue)
+    public function __set(string $strName, mixed $mixValue): void
     {
         switch ($strName) {
             case "HtmlEntities":
@@ -540,7 +572,7 @@ class VauuTable extends \QCubed\Control\TableBase
                 try {
                     $this->intSortDirection = Type::cast($mixValue, Type::INTEGER);
                     if ($this->intSortDirection != self::SORT_DESCENDING) {
-                        $this->intSortDirection = self::SORT_ASCENDING;    // make sure its only one of two values
+                        $this->intSortDirection = self::SORT_ASCENDING;    // make sure it's only one of two values
                     }
                     break;
                 } catch (InvalidCast $objExc) {

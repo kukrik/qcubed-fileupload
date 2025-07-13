@@ -8,6 +8,9 @@
 namespace QCubed\Plugin;
 
 
+/**
+ *
+ */
 class FileUpload extends FileUploadBase
 {
     /*public function  __construct($objParentObject, $strControlId = null) {
